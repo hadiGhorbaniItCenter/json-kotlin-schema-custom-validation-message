@@ -47,7 +47,7 @@ class UniqueItemsValidator(uri: URI?, location: JSONPointer): JSONSchema.Validat
             BasicErrorEntry? {
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONSequence<*> || uniqueItems(instance)) null else
-                createBasicErrorEntry(relativeLocation, instanceLocation, "Array items not unique")
+                createBasicErrorEntry(relativeLocation, instanceLocation, "آیتم های آرایه منحصر به فرد نیستند")
     }
 
     override fun equals(other: Any?): Boolean = this === other || other is UniqueItemsValidator && super.equals(other)

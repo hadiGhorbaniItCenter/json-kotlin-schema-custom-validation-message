@@ -70,14 +70,14 @@ class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSc
                 count++
         }
         if (minContains == null && count == 0)
-            return createBasicErrorEntry(relativeLocation, instanceLocation, "No matching entry")
+            return createBasicErrorEntry(relativeLocation, instanceLocation, "ورودی منطبقی وجود ندارد")
         minContains?.let {
             if (count < it)
                 return BasicErrorEntry(
                         relativeLocation.parent().child("minContains").schemaURIFragment(),
                         uri?.let { x -> "$x${location.parent().child("minContains").schemaURIFragment()}" },
                         instanceLocation.schemaURIFragment(),
-                        "Matching entry minimum $it, was $count"
+                        "منطبق با حداقل ورودی $it, بود $count"
                 )
         }
         maxContains?.let {
@@ -86,7 +86,7 @@ class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSc
                         relativeLocation.parent().child("maxContains").schemaURIFragment(),
                         uri?.let { x -> "$x${location.parent().child("maxContains").schemaURIFragment()}" },
                         instanceLocation.schemaURIFragment(),
-                        "Matching entry maximum $it, was $count"
+                        "منطبق با حداکثر ورودی $it, بود $count"
                 )
         }
         return null

@@ -53,7 +53,7 @@ class PropertiesValidator(uri: URI?, location: JSONPointer, val condition: Valid
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONMapping<*> || validSize(instance)) null else
             createBasicErrorEntry(relativeLocation, instanceLocation,
-                    "Object fails properties count check: ${condition.keyword} $value, was ${instance.size}")
+                    "بررسی شمارش ویژگی ای شیء شکست خورده است: ${condition.keyword} $value, was ${instance.size}")
     }
 
     private fun validSize(instance: JSONMapping<*>): Boolean = when (condition) {

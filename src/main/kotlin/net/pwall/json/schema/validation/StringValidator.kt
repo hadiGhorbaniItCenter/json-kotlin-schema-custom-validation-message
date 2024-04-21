@@ -55,7 +55,7 @@ class StringValidator(uri: URI?, location: JSONPointer, val condition: Validatio
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONString || validLength(instance)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "String fails length check: ${condition.keyword} $value, was ${instance.unicodeLength()}")
+                        "تعداد کاراکتر صحیح نیست: ${condition.keyword} $value, بود ${instance.unicodeLength()}")
     }
 
     private fun validLength(instance: JSONString): Boolean = when (condition) {

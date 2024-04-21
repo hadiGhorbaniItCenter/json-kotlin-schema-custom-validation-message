@@ -53,7 +53,7 @@ class ArrayValidator(uri: URI?, location: JSONPointer, val condition: Validation
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONSequence<*> || validNumberOfItems(instance)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "Array fails number of items check: ${condition.keyword} $value, was ${instance.size}")
+                        "آرایه تعداد آیتم ها را بررسی نمی کند: ${condition.keyword} $value, بود ${instance.size}")
     }
 
     private fun validNumberOfItems(instance: JSONSequence<*>): Boolean = when (condition) {

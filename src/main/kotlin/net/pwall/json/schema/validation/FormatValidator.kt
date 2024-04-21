@@ -80,7 +80,7 @@ class FormatValidator(
             return schema.createBasicErrorEntry(
                 relativeLocation = relativeLocation,
                 instanceLocation = instanceLocation,
-                error = "Value fails format check \"$name\", was ${instanceLocation.eval(json)?.toJSON()}",
+                error = "بررسی قالب مقدار ناموفق است : \"$name\", بود ${instanceLocation.eval(json)?.toJSON()}",
             )
         }
 
@@ -91,6 +91,14 @@ class FormatValidator(
         override val name: String = "date-time"
 
         override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isDateTime(value.value)
+
+    }
+
+    object ExampleCustomFormatChecker : FormatChecker {
+
+        override val name: String = "test"
+
+        override fun check(value: JSONValue?): Boolean = value !is JSONString || value.value =="test"
 
     }
 
@@ -304,6 +312,7 @@ class FormatValidator(
     companion object {
 
         private val checkers = listOf(
+            ExampleCustomFormatChecker,
             DateTimeFormatChecker,
             DateFormatChecker,
             TimeFormatChecker,

@@ -42,7 +42,7 @@ class ConstValidator(uri: URI?, location: JSONPointer, val value: JSONValue?) : 
     override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
             BasicErrorEntry? = instanceLocation.eval(json).let { if (it == value) null else
                     createBasicErrorEntry(relativeLocation, instanceLocation,
-                            "Does not match constant: ${it.toErrorDisplay()}") }
+                            "با مقدار ثابت مطابقت ندارد: ${it.toErrorDisplay()}") }
 
     override fun equals(other: Any?): Boolean =
             this === other || other is ConstValidator && super.equals(other) && value == other.value

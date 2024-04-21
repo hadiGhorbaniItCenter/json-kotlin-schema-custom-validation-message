@@ -49,7 +49,7 @@ class EnumValidator(uri: URI?, location: JSONPointer, val array: JSONSequence<*>
         val instance = instanceLocation.eval(json)
         array.forEach { if (instance == it) return null }
         return createBasicErrorEntry(relativeLocation, instanceLocation,
-                "Not in enumerated values: ${instance.toErrorDisplay()}")
+                "در مقادیر تعریف شده نیست : ${instance.toErrorDisplay()}")
     }
 
     override fun equals(other: Any?): Boolean =

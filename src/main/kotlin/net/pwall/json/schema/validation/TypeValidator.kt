@@ -88,7 +88,7 @@ class TypeValidator(uri: URI?, location: JSONPointer, val types: List<Type>) : J
     override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
             BasicErrorEntry? = if (validate(json, instanceLocation)) null else
                     createBasicErrorEntry(relativeLocation, instanceLocation,
-                            "Incorrect type, expected ${types.joinToString(separator = " or ") { it.value }}")
+                            "نوع نادرست، مورد انتظار  ${types.joinToString(separator = " or ") { it.value }}")
 
     override fun equals(other: Any?): Boolean =
             this === other || other is TypeValidator && super.equals(other) && types == other.types
