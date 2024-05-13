@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.math.BigDecimal
 import java.net.URI
 
@@ -44,7 +46,8 @@ import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 
-class TypeValidator(uri: URI?, location: JSONPointer, val types: List<Type>) : JSONSchema.Validator(uri, location) {
+class TypeValidator(uri: URI?, location: JSONPointer, val types: List<Type>) :
+    JSONSchema.Validator(uri, location) {
 
     override fun childLocation(pointer: JSONPointer): JSONPointer = pointer.child("type")
 
@@ -71,27 +74,39 @@ class TypeValidator(uri: URI?, location: JSONPointer, val types: List<Type>) : J
             is JSONZero -> true
             is JSONDecimal -> {
                 val value: BigDecimal = instance.value
-                value.scale() <= 0 || value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) == 0
+                value.scale() <= 0 || value.remainder(BigDecimal.ONE)
+                    .compareTo(BigDecimal.ZERO) == 0
             }
+
             is JSONDouble -> {
                 val value: Double = instance.value
                 value.rem(1.0) == 0.0
             }
+
             is JSONFloat -> {
                 val value: Float = instance.value
                 value.rem(1.0F) == 0.0F
             }
+
             else -> false
         }
     }
 
-    override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun getErrorEntry(
+        relativeLocation: JSONPointer,
+        json: JSONValue?,
+        instanceLocation: JSONPointer
+    ):
             BasicErrorEntry? = if (validate(json, instanceLocation)) null else
-                    createBasicErrorEntry(relativeLocation, instanceLocation,
-                            "نوع نادرست، مورد انتظار  ${types.joinToString(separator = " or ") { it.value }}")
+        createBasicErrorEntry(
+            relativeLocation, instanceLocation,
+            LibraryContext.applicationContext.getString(
+                R.string.validation_msg_type,
+                types.joinToString(separator = " or ") { it.value })
+        )
 
     override fun equals(other: Any?): Boolean =
-            this === other || other is TypeValidator && super.equals(other) && types == other.types
+        this === other || other is TypeValidator && super.equals(other) && types == other.types
 
     override fun hashCode(): Int = super.hashCode() xor types.hashCode()
 

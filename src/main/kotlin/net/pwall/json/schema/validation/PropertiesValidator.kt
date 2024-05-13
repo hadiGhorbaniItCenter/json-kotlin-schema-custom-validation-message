@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 
 import net.pwall.json.JSONMapping
@@ -53,7 +55,7 @@ class PropertiesValidator(uri: URI?, location: JSONPointer, val condition: Valid
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONMapping<*> || validSize(instance)) null else
             createBasicErrorEntry(relativeLocation, instanceLocation,
-                    "بررسی شمارش ویژگی ای شیء شکست خورده است: ${condition.keyword} $value, was ${instance.size}")
+                LibraryContext.applicationContext.getString(R.string.validation_msg_properties, condition.keyword, value,instance.size))
     }
 
     private fun validSize(instance: JSONMapping<*>): Boolean = when (condition) {

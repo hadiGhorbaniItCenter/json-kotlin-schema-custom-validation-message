@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 import net.pwall.json.JSONSequence
 import net.pwall.json.JSONValue
@@ -32,8 +34,10 @@ import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 
-class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSchema: JSONSchema,
-            private val minContains: Int?, private val maxContains: Int?) : JSONSchema.Validator(uri, location) {
+class ContainsValidator(
+    uri: URI?, location: JSONPointer, private val containsSchema: JSONSchema,
+    private val minContains: Int?, private val maxContains: Int?
+) : JSONSchema.Validator(uri, location) {
 
     override fun childLocation(pointer: JSONPointer): JSONPointer = pointer.child("contains")
 
@@ -59,7 +63,11 @@ class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSc
         return true
     }
 
-    override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun getErrorEntry(
+        relativeLocation: JSONPointer,
+        json: JSONValue?,
+        instanceLocation: JSONPointer
+    ):
             BasicErrorEntry? {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONSequence<*>)
@@ -70,23 +78,35 @@ class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSc
                 count++
         }
         if (minContains == null && count == 0)
-            return createBasicErrorEntry(relativeLocation, instanceLocation, "ورودی منطبقی وجود ندارد")
+            return createBasicErrorEntry(
+                relativeLocation,
+                instanceLocation,
+                LibraryContext.applicationContext.getString(R.string.validation_msg_contains)
+            )
         minContains?.let {
             if (count < it)
                 return BasicErrorEntry(
-                        relativeLocation.parent().child("minContains").schemaURIFragment(),
-                        uri?.let { x -> "$x${location.parent().child("minContains").schemaURIFragment()}" },
-                        instanceLocation.schemaURIFragment(),
-                        "منطبق با حداقل ورودی $it, بود $count"
+                    relativeLocation.parent().child("minContains").schemaURIFragment(),
+                    uri?.let { x ->
+                        "$x${
+                            location.parent().child("minContains").schemaURIFragment()
+                        }"
+                    },
+                    instanceLocation.schemaURIFragment(),
+                    LibraryContext.applicationContext.getString(R.string.validation_msg_contains_min, it, count)
                 )
         }
         maxContains?.let {
             if (count > it)
                 return BasicErrorEntry(
-                        relativeLocation.parent().child("maxContains").schemaURIFragment(),
-                        uri?.let { x -> "$x${location.parent().child("maxContains").schemaURIFragment()}" },
-                        instanceLocation.schemaURIFragment(),
-                        "منطبق با حداکثر ورودی $it, بود $count"
+                    relativeLocation.parent().child("maxContains").schemaURIFragment(),
+                    uri?.let { x ->
+                        "$x${
+                            location.parent().child("maxContains").schemaURIFragment()
+                        }"
+                    },
+                    instanceLocation.schemaURIFragment(),
+                    LibraryContext.applicationContext.getString(R.string.validation_msg_contains_max, it, count)
                 )
         }
         return null
@@ -96,7 +116,8 @@ class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSc
             other is ContainsValidator && super.equals(other) && containsSchema == other.containsSchema &&
             minContains == other.minContains && maxContains == other.maxContains
 
-    override fun hashCode(): Int = super.hashCode() xor containsSchema.hashCode() xor minContains.hashCode() xor
-            maxContains.hashCode()
+    override fun hashCode(): Int =
+        super.hashCode() xor containsSchema.hashCode() xor minContains.hashCode() xor
+                maxContains.hashCode()
 
 }

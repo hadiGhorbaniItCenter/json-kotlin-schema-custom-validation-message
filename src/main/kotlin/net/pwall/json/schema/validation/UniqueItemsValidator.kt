@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 
 import net.pwall.json.JSONSequence
@@ -47,7 +49,8 @@ class UniqueItemsValidator(uri: URI?, location: JSONPointer): JSONSchema.Validat
             BasicErrorEntry? {
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONSequence<*> || uniqueItems(instance)) null else
-                createBasicErrorEntry(relativeLocation, instanceLocation, "آیتم های آرایه منحصر به فرد نیستند")
+                createBasicErrorEntry(relativeLocation, instanceLocation, LibraryContext.applicationContext.getString(
+                    R.string.validation_msg_UniqueItems))
     }
 
     override fun equals(other: Any?): Boolean = this === other || other is UniqueItemsValidator && super.equals(other)

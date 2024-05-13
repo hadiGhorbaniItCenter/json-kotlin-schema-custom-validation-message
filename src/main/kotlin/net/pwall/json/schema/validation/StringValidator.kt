@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 
 import net.pwall.json.JSONString
@@ -55,7 +57,7 @@ class StringValidator(uri: URI?, location: JSONPointer, val condition: Validatio
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONString || validLength(instance)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "تعداد کاراکتر صحیح نیست: ${condition.keyword} $value, بود ${instance.unicodeLength()}")
+                    LibraryContext.applicationContext.getString(R.string.validation_msg_string, condition.keyword, value,instance.unicodeLength()))
     }
 
     private fun validLength(instance: JSONString): Boolean = when (condition) {

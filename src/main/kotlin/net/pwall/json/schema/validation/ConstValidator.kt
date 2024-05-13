@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 
 import net.pwall.json.JSONValue
@@ -32,20 +34,29 @@ import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 
-class ConstValidator(uri: URI?, location: JSONPointer, val value: JSONValue?) : JSONSchema.Validator(uri, location) {
+class ConstValidator(uri: URI?, location: JSONPointer, val value: JSONValue?) :
+    JSONSchema.Validator(uri, location) {
 
     override fun childLocation(pointer: JSONPointer): JSONPointer = pointer.child("const")
 
     override fun validate(json: JSONValue?, instanceLocation: JSONPointer): Boolean =
         instanceLocation.eval(json) == value
 
-    override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
-            BasicErrorEntry? = instanceLocation.eval(json).let { if (it == value) null else
-                    createBasicErrorEntry(relativeLocation, instanceLocation,
-                            "با مقدار ثابت مطابقت ندارد: ${it.toErrorDisplay()}") }
+    override fun getErrorEntry(
+        relativeLocation: JSONPointer,
+        json: JSONValue?,
+        instanceLocation: JSONPointer
+    ):
+            BasicErrorEntry? = instanceLocation.eval(json).let {
+        if (it == value) null else
+            createBasicErrorEntry(
+                relativeLocation, instanceLocation,
+                LibraryContext.applicationContext.getString(R.string.validation_msg_const, it.toErrorDisplay())
+            )
+    }
 
     override fun equals(other: Any?): Boolean =
-            this === other || other is ConstValidator && super.equals(other) && value == other.value
+        this === other || other is ConstValidator && super.equals(other) && value == other.value
 
     override fun hashCode(): Int = super.hashCode() xor value.hashCode()
 

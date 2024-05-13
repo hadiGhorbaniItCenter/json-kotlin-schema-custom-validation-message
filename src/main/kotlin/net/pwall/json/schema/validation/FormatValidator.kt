@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import kotlin.math.floor
 
 import java.math.BigDecimal
@@ -53,11 +55,15 @@ class FormatValidator(
         return checker.check(instanceLocation.eval(json))
     }
 
-    override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun getErrorEntry(
+        relativeLocation: JSONPointer,
+        json: JSONValue?,
+        instanceLocation: JSONPointer
+    ):
             BasicErrorEntry? {
         val instance = instanceLocation.eval(json)
         return if (checker.check(instance)) null else
-                checker.getBasicErrorEntry(this, relativeLocation, instanceLocation, json)
+            checker.getBasicErrorEntry(this, relativeLocation, instanceLocation, json)
     }
 
     override fun equals(other: Any?): Boolean = this === other ||
@@ -76,11 +82,15 @@ class FormatValidator(
             relativeLocation: JSONPointer,
             instanceLocation: JSONPointer,
             json: JSONValue?,
-        ):  BasicErrorEntry {
+        ): BasicErrorEntry {
             return schema.createBasicErrorEntry(
                 relativeLocation = relativeLocation,
                 instanceLocation = instanceLocation,
-                error = "بررسی قالب مقدار ناموفق است : \"$name\", بود ${instanceLocation.eval(json)?.toJSON()}",
+                error = LibraryContext.applicationContext.getString(
+                    R.string.validation_msg_Format,
+                    name,
+                    instanceLocation.eval(json)?.toJSON()
+                ),
             )
         }
 
@@ -90,7 +100,8 @@ class FormatValidator(
 
         override val name: String = "date-time"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isDateTime(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isDateTime(value.value)
 
     }
 
@@ -98,7 +109,8 @@ class FormatValidator(
 
         override val name: String = "test"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || value.value =="test"
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || value.value == "test"
 
     }
 
@@ -106,7 +118,8 @@ class FormatValidator(
 
         override val name: String = "date"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isDate(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isDate(value.value)
 
     }
 
@@ -114,7 +127,8 @@ class FormatValidator(
 
         override val name: String = "time"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isTime(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isTime(value.value)
 
     }
 
@@ -122,7 +136,8 @@ class FormatValidator(
 
         override val name: String = "duration"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isDuration(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isDuration(value.value)
 
     }
 
@@ -130,7 +145,8 @@ class FormatValidator(
 
         override val name: String = "email"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isEmail(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isEmail(value.value)
 
     }
 
@@ -138,7 +154,8 @@ class FormatValidator(
 
         override val name: String = "hostname"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isHostname(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isHostname(value.value)
 
     }
 
@@ -146,7 +163,8 @@ class FormatValidator(
 
         override val name: String = "ipv4"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isIPV4(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isIPV4(value.value)
 
     }
 
@@ -154,7 +172,8 @@ class FormatValidator(
 
         override val name: String = "ipv6"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isIPV6(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isIPV6(value.value)
 
     }
 
@@ -162,7 +181,8 @@ class FormatValidator(
 
         override val name: String = "uri"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isURI(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isURI(value.value)
 
     }
 
@@ -171,7 +191,7 @@ class FormatValidator(
         override val name: String = "uri-reference"
 
         override fun check(value: JSONValue?): Boolean =
-                value !is JSONString || JSONValidation.isURIReference(value.value)
+            value !is JSONString || JSONValidation.isURIReference(value.value)
 
     }
 
@@ -179,7 +199,8 @@ class FormatValidator(
 
         override val name: String = "uuid"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isUUID(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isUUID(value.value)
 
     }
 
@@ -188,7 +209,7 @@ class FormatValidator(
         override val name: String = "json-pointer"
 
         override fun check(value: JSONValue?): Boolean =
-                value !is JSONString || JSONValidation.isJSONPointer(value.value)
+            value !is JSONString || JSONValidation.isJSONPointer(value.value)
 
     }
 
@@ -197,7 +218,7 @@ class FormatValidator(
         override val name: String = "relative-json-pointer"
 
         override fun check(value: JSONValue?): Boolean =
-                value !is JSONString || JSONValidation.isRelativeJSONPointer(value.value)
+            value !is JSONString || JSONValidation.isRelativeJSONPointer(value.value)
 
     }
 
@@ -205,7 +226,8 @@ class FormatValidator(
 
         override val name: String = "regex"
 
-        override fun check(value: JSONValue?): Boolean = value !is JSONString || JSONValidation.isRegex(value.value)
+        override fun check(value: JSONValue?): Boolean =
+            value !is JSONString || JSONValidation.isRegex(value.value)
 
     }
 
@@ -225,20 +247,24 @@ class FormatValidator(
         override fun check(value: JSONValue?): Boolean = when (value) {
             is JSONDecimal -> {
                 try {
-                    value.bigDecimalValue().setScale(0) in BigDecimal(Long.MIN_VALUE)..BigDecimal(Long.MAX_VALUE)
-                }
-                catch (e: ArithmeticException) {
+                    value.bigDecimalValue().setScale(0) in BigDecimal(Long.MIN_VALUE)..BigDecimal(
+                        Long.MAX_VALUE
+                    )
+                } catch (e: ArithmeticException) {
                     false
                 }
             }
+
             is JSONDouble -> {
                 val doubleValue = value.value
                 doubleValue == floor(doubleValue) && doubleValue in Long.MIN_VALUE.toDouble()..Long.MAX_VALUE.toDouble()
             }
+
             is JSONFloat -> {
                 val floatValue = value.value
                 floatValue == floor(floatValue) && floatValue in Long.MIN_VALUE.toFloat()..Long.MAX_VALUE.toFloat()
             }
+
             else -> true // includes JSONInteger, JSONLong, JSONZero
         }
 
@@ -252,20 +278,23 @@ class FormatValidator(
             is JSONLong -> value.value in Int.MIN_VALUE.toLong()..Int.MAX_VALUE.toLong()
             is JSONDecimal -> {
                 try {
-                    value.bigDecimalValue().setScale(0) in BigDecimal(Int.MIN_VALUE)..BigDecimal(Int.MAX_VALUE)
-                }
-                catch (e: ArithmeticException) {
+                    value.bigDecimalValue()
+                        .setScale(0) in BigDecimal(Int.MIN_VALUE)..BigDecimal(Int.MAX_VALUE)
+                } catch (e: ArithmeticException) {
                     false
                 }
             }
+
             is JSONDouble -> {
                 val doubleValue = value.value
                 doubleValue == floor(doubleValue) && doubleValue in Int.MIN_VALUE.toDouble()..Int.MAX_VALUE.toDouble()
             }
+
             is JSONFloat -> {
                 val floatValue = value.value
                 floatValue == floor(floatValue) && floatValue in Int.MIN_VALUE.toFloat()..Int.MAX_VALUE.toFloat()
             }
+
             else -> true // includes JSONInteger, JSONZero
         }
 
@@ -282,7 +311,8 @@ class FormatValidator(
 
     }
 
-    class DelegatingFormatChecker(override val name: String, vararg val validators: Validator) : FormatChecker {
+    class DelegatingFormatChecker(override val name: String, vararg val validators: Validator) :
+        FormatChecker {
 
         override fun check(value: JSONValue?): Boolean {
             for (validator in validators)
@@ -298,12 +328,15 @@ class FormatValidator(
             json: JSONValue?,
         ): BasicErrorEntry {
             for (validator in validators)
-                validator.getErrorEntry(relativeLocation.child(name), json, instanceLocation)?.let { return it }
+                validator.getErrorEntry(relativeLocation.child(name), json, instanceLocation)
+                    ?.let { return it }
             return super.getBasicErrorEntry(schema, relativeLocation, instanceLocation, json)
         }
 
         override fun equals(other: Any?): Boolean = this === other ||
-                other is DelegatingFormatChecker && name == other.name && validators.contentEquals(other.validators)
+                other is DelegatingFormatChecker && name == other.name && validators.contentEquals(
+            other.validators
+        )
 
         override fun hashCode(): Int = name.hashCode() xor validators.hashCode()
 

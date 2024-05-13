@@ -25,13 +25,15 @@
 
 package net.pwall.json.schema.validation
 
-import java.net.URI
-
+import ir.part.sdk.namabar.widget.generator.R
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
 import net.pwall.json.JSONString
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import java.net.URI
+
 
 class PatternValidator(uri: URI?, location: JSONPointer, val regex: Regex) : JSONSchema.Validator(uri, location) {
 
@@ -47,7 +49,7 @@ class PatternValidator(uri: URI?, location: JSONPointer, val regex: Regex) : JSO
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONString || regex.containsMatchIn(instance.value)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "ورودی با قالب مورد نظر مطابقت ندارد  $regex - ${instance.toErrorDisplay()}")
+                    LibraryContext.applicationContext.getString(R.string.validation_msg_pattern, regex, instance.toErrorDisplay()))
     }
 
     override fun equals(other: Any?): Boolean =

@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.net.URI
 
 import net.pwall.json.JSONSequence
@@ -34,7 +36,7 @@ import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 
 class EnumValidator(uri: URI?, location: JSONPointer, val array: JSONSequence<*>) :
-        JSONSchema.Validator(uri, location) {
+    JSONSchema.Validator(uri, location) {
 
     override fun childLocation(pointer: JSONPointer): JSONPointer = pointer.child("enum")
 
@@ -44,16 +46,22 @@ class EnumValidator(uri: URI?, location: JSONPointer, val array: JSONSequence<*>
         return false
     }
 
-    override fun getErrorEntry(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun getErrorEntry(
+        relativeLocation: JSONPointer,
+        json: JSONValue?,
+        instanceLocation: JSONPointer
+    ):
             BasicErrorEntry? {
         val instance = instanceLocation.eval(json)
         array.forEach { if (instance == it) return null }
-        return createBasicErrorEntry(relativeLocation, instanceLocation,
-                "در مقادیر تعریف شده نیست : ${instance.toErrorDisplay()}")
+        return createBasicErrorEntry(
+            relativeLocation, instanceLocation,
+            LibraryContext.applicationContext.getString(R.string.validation_msg_Enum, instance.toErrorDisplay())
+        )
     }
 
     override fun equals(other: Any?): Boolean =
-            this === other || other is EnumValidator && super.equals(other) && array == other.array
+        this === other || other is EnumValidator && super.equals(other) && array == other.array
 
     override fun hashCode(): Int = super.hashCode() xor array.hashCode()
 

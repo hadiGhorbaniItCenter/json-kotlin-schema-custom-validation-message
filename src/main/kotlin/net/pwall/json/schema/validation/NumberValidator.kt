@@ -25,6 +25,8 @@
 
 package net.pwall.json.schema.validation
 
+import ir.part.sdk.namabar.widget.generator.forms.compose.LibraryContext
+import ir.part.sdk.namabar.widget.generator.R
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.net.URI
@@ -65,7 +67,7 @@ class NumberValidator(uri: URI?, location: JSONPointer, val value: Number, val c
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONNumberValue || validNumber(instance)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "Number fails check: ${condition.keyword} $value, was $instance")
+                    LibraryContext.applicationContext.getString(R.string.validation_msg_number, condition.keyword, value,instance))
     }
 
     private fun validNumber(instance: JSONNumberValue) = when (condition) {
