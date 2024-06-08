@@ -39,6 +39,7 @@ import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import net.pwall.json.schema.persianNumberToEnglishNumber
 import net.pwall.json.validation.JSONValidation
 
 class FormatValidator(
@@ -121,6 +122,17 @@ class FormatValidator(
         override fun check(value: JSONValue?): Boolean =
             value !is JSONString || JSONValidation.isDate(value.value)
 
+    }
+    object PersianDateFormatChecker : FormatChecker {
+
+        override val name: String = "persian-date"
+        override val msg: String? = "تاریخ نا معتبر است"
+        val pattern = "[0-9]{4}/[0-9]{1,2}/[0-9]{1,2}"
+
+        override fun check(value: JSONValue?): Boolean {
+            // Check if value is a JSONString and if it matches the pattern
+            return value is JSONString && persianNumberToEnglishNumber(value.value).matches(Regex(pattern))
+        }
     }
 
     object TimeFormatChecker : FormatChecker {
@@ -377,6 +389,7 @@ class FormatValidator(
             ExampleCustomFormatChecker,
             DateTimeFormatChecker,
             DateFormatChecker,
+            PersianDateFormatChecker,
             TimeFormatChecker,
             DurationFormatChecker,
             EmailFormatChecker,
