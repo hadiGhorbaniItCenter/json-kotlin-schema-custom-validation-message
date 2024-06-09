@@ -25,9 +25,6 @@
 
 package net.pwall.json.schema
 
-import java.io.File
-import java.net.URI
-
 import net.pwall.json.JSON
 import net.pwall.json.JSONBoolean
 import net.pwall.json.JSONMapping
@@ -44,6 +41,8 @@ import net.pwall.json.schema.parser.Parser
 import net.pwall.json.schema.subschema.AllOfSchema
 import net.pwall.json.schema.subschema.AnyOfSchema
 import net.pwall.json.schema.subschema.OneOfSchema
+import java.io.File
+import java.net.URI
 
 /**
  * A JSON Schema.

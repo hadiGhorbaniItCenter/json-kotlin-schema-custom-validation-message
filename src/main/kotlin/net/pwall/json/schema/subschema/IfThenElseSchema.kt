@@ -25,13 +25,12 @@
 
 package net.pwall.json.schema.subschema
 
-import java.net.URI
-
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicOutput
 import net.pwall.json.schema.output.DetailedOutput
+import java.net.URI
 
 class IfThenElseSchema(uri: URI?, location: JSONPointer, private val ifSchema: JSONSchema,
         private val thenSchema: JSONSchema?, private val elseSchema: JSONSchema?) :

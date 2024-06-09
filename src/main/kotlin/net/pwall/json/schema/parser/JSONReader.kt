@@ -25,17 +25,16 @@
 
 package net.pwall.json.schema.parser
 
-import java.io.File
-import java.io.InputStream
-import java.net.URI
-import java.nio.file.Files
-import java.nio.file.Path
-
 import net.pwall.json.JSON
 import net.pwall.json.JSONValue
 import net.pwall.json.schema.JSONSchemaException
 import net.pwall.json.schema.parser.Parser.Companion.dropFragment
 import net.pwall.yaml.YAMLSimple
+import java.io.File
+import java.io.InputStream
+import java.net.URI
+import java.nio.file.Files
+import java.nio.file.Path
 
 class JSONReader(val uriResolver: (URI) -> InputStream?) {
 

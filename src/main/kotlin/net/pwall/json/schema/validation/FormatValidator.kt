@@ -25,11 +25,6 @@
 
 package net.pwall.json.schema.validation
 
-import kotlin.math.floor
-
-import java.math.BigDecimal
-import java.net.URI
-
 import net.pwall.json.JSONDecimal
 import net.pwall.json.JSONDouble
 import net.pwall.json.JSONFloat
@@ -41,6 +36,9 @@ import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 import net.pwall.json.schema.persianNumberToEnglishNumber
 import net.pwall.json.validation.JSONValidation
+import java.math.BigDecimal
+import java.net.URI
+import kotlin.math.floor
 
 class FormatValidator(
     uri: URI?,

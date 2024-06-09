@@ -25,16 +25,6 @@
 
 package net.pwall.json.schema.parser
 
-import java.io.File
-import java.io.InputStream
-import java.math.BigDecimal
-import java.math.BigInteger
-import java.net.HttpURLConnection
-import java.net.URI
-import java.nio.charset.Charset
-import java.nio.file.Files
-import java.nio.file.Path
-
 import net.pwall.json.JSONBoolean
 import net.pwall.json.JSONDecimal
 import net.pwall.json.JSONDouble
@@ -77,6 +67,15 @@ import net.pwall.json.schema.validation.PropertiesValidator
 import net.pwall.json.schema.validation.StringValidator
 import net.pwall.json.schema.validation.TypeValidator
 import net.pwall.json.schema.validation.UniqueItemsValidator
+import java.io.File
+import java.io.InputStream
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.net.HttpURLConnection
+import java.net.URI
+import java.nio.charset.Charset
+import java.nio.file.Files
+import java.nio.file.Path
 
 class Parser(var options: Options = Options(), uriResolver: (URI) -> InputStream? = defaultURIResolver) {
 

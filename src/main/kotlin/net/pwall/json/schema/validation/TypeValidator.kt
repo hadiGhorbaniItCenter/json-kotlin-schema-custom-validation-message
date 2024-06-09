@@ -25,9 +25,6 @@
 
 package net.pwall.json.schema.validation
 
-import java.math.BigDecimal
-import java.net.URI
-
 import net.pwall.json.JSONBoolean
 import net.pwall.json.JSONDecimal
 import net.pwall.json.JSONDouble
@@ -43,6 +40,8 @@ import net.pwall.json.JSONZero
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import java.math.BigDecimal
+import java.net.URI
 
 class TypeValidator(uri: URI?, location: JSONPointer, val types: List<Type>) : JSONSchema.Validator(uri, location) {
 

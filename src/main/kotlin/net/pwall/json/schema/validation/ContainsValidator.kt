@@ -25,12 +25,12 @@
 
 package net.pwall.json.schema.validation
 
-import java.net.URI
 import net.pwall.json.JSONSequence
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import java.net.URI
 
 class ContainsValidator(uri: URI?, location: JSONPointer, private val containsSchema: JSONSchema,
             private val minContains: Int?, private val maxContains: Int?) : JSONSchema.Validator(uri, location) {

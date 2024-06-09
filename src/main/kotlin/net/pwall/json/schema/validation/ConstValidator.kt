@@ -25,12 +25,11 @@
 
 package net.pwall.json.schema.validation
 
-import java.net.URI
-
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import java.net.URI
 
 class ConstValidator(uri: URI?, location: JSONPointer, val value: JSONValue?) : JSONSchema.Validator(uri, location) {
 

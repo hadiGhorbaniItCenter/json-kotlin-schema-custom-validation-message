@@ -25,14 +25,13 @@
 
 package net.pwall.json.schema.subschema
 
-import java.net.URI
-
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
 import net.pwall.json.schema.output.BasicOutput
 import net.pwall.json.schema.output.DetailedOutput
+import java.net.URI
 
 abstract class CombinationSchema(uri: URI?, location: JSONPointer, val name: String, val array: List<JSONSchema>) :
         JSONSchema.SubSchema(uri, location) {

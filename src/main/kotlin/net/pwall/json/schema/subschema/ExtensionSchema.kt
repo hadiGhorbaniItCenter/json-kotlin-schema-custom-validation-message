@@ -25,11 +25,11 @@
 
 package net.pwall.json.schema.subschema
 
-import java.net.URI
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicOutput
+import java.net.URI
 
 class ExtensionSchema(uri: URI?, location: JSONPointer, val name: String, val value: Any?) :
         JSONSchema.SubSchema(uri, location) {

@@ -25,13 +25,12 @@
 
 package net.pwall.json.schema.validation
 
-import java.net.URI
-
 import net.pwall.json.JSONSequence
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
 import net.pwall.json.schema.output.BasicErrorEntry
+import java.net.URI
 
 @Suppress("EqualsOrHashCode")
 class UniqueItemsValidator(uri: URI?, location: JSONPointer): JSONSchema.Validator(uri, location) {

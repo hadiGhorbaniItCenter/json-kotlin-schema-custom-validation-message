@@ -25,8 +25,6 @@
 
 package net.pwall.json.schema.subschema
 
-import java.net.URI
-
 import net.pwall.json.JSONMapping
 import net.pwall.json.JSONString
 import net.pwall.json.JSONValue
@@ -36,6 +34,7 @@ import net.pwall.json.schema.output.BasicErrorEntry
 import net.pwall.json.schema.output.BasicOutput
 import net.pwall.json.schema.output.DetailedOutput
 import net.pwall.json.schema.output.Output
+import java.net.URI
 
 class PropertyNamesSchema(uri: URI?, location: JSONPointer, private val nameSchema: JSONSchema) :
         JSONSchema.SubSchema(uri, location) {
