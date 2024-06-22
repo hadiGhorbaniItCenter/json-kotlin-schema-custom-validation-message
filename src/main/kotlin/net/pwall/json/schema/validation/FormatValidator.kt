@@ -257,9 +257,9 @@ class FormatValidator(
     object EnglishStringChecker : FormatChecker {
 
         override val name: String = "englishString"
-        override val msg: String? = "متن باید ترکیبی از حروف و عدد انگلیسی و کاراکترهای خاص باشد"
+        override val msg: String? = "فقط حروف انگلیسی مجاز است!"
         val pattern =
-            "^[\\s\\u06F0-\\u06F90-9\\.\\/\\-]+\$"
+            """^[_A-z0-9]*((\s)*[_A-z0-9])*${'$'}"""
 
         override fun check(value: JSONValue?): Boolean =
             value !is JSONString || value.value.matches(pattern.toRegex())
