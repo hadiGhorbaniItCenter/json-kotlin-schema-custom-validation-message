@@ -72,16 +72,16 @@ class PropertyNamesSchema(uri: URI?, location: JSONPointer, private val nameSche
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONMapping<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object", propertyName = propertyName)
         val errors = mutableListOf<Output>()
         val annotations = mutableListOf<Output>()
         for (propertyName in instance.keys) {
             val instanceString = instanceLocation.child(propertyName).schemaURIFragment()
-            nameSchema.validateDetailed(JSONString(propertyName), JSONPointer.root).let { output ->
+            nameSchema.validateDetailed(JSONString(propertyName), JSONPointer.root, propertyName = propertyName).let { output ->
                 output.mapInstance(instanceString).let {
                     if (it.valid)
                         annotations.add(it)
@@ -92,10 +92,10 @@ class PropertyNamesSchema(uri: URI?, location: JSONPointer, private val nameSche
         }
         if (errors.isEmpty())
             return createAnnotation(relativeLocation, instanceLocation, "Property names are valid",
-                    annotations = annotations)
+                    annotations = annotations, propertyName = propertyName)
         (errors.first() as? DetailedOutput)?.let { return it }
         return createError(relativeLocation, instanceLocation, "Errors in property names", errors = errors,
-                annotations = annotations.takeIf { it.isNotEmpty() })
+                annotations = annotations.takeIf { it.isNotEmpty() }, propertyName = propertyName)
     }
 
     private fun Output.mapInstance(instanceString: String): Output = when (this) {
@@ -108,7 +108,7 @@ class PropertyNamesSchema(uri: URI?, location: JSONPointer, private val nameSche
                     error = error,
                     annotation = annotation,
                     errors = errors?.map { it.mapInstance(instanceString) },
-                    annotations = annotations?.map { it.mapInstance(instanceString) }
+                    annotations = annotations?.map { it.mapInstance(instanceString) }, propertyName = propertyName
             )
         }
         else -> this

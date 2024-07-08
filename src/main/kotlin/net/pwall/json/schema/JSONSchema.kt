@@ -81,14 +81,14 @@ sealed class JSONSchema(
     abstract fun validateBasic(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
             BasicOutput
 
-    abstract fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    abstract fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput
 
     fun validateBasic(json: JSONValue?, instanceLocation: JSONPointer = JSONPointer.root) =
             validateBasic(JSONPointer.root, json, instanceLocation)
 
-    fun validateDetailed(json: JSONValue?, instanceLocation: JSONPointer = JSONPointer.root) =
-            validateDetailed(JSONPointer.root, json, instanceLocation)
+    fun validateDetailed(json: JSONValue?, instanceLocation: JSONPointer = JSONPointer.root,propertyName:String?) =
+            validateDetailed(JSONPointer.root, json, instanceLocation,propertyName)
 
     fun validate(json: String, instanceLocation: JSONPointer = JSONPointer.root) =
             validate(JSON.parse(json), instanceLocation)
@@ -96,24 +96,24 @@ sealed class JSONSchema(
     fun validateBasic(json: String, instanceLocation: JSONPointer = JSONPointer.root) =
             validateBasic(JSONPointer.root, JSON.parse(json), instanceLocation)
 
-    fun validateDetailed(json: String, instanceLocation: JSONPointer = JSONPointer.root) =
-            validateDetailed(JSONPointer.root, JSON.parse(json), instanceLocation)
+    fun validateDetailed(json: String, instanceLocation: JSONPointer = JSONPointer.root,propertyName:String?) =
+            validateDetailed(JSONPointer.root, JSON.parse(json), instanceLocation,propertyName)
 
     fun createAnnotation(relativeLocation: JSONPointer, instanceLocation: JSONPointer, annotation: String,
-            errors: List<Output>? = null, annotations: List<Output>? = null): DetailedOutput {
+            errors: List<Output>? = null, annotations: List<Output>? = null,propertyName:String?): DetailedOutput {
         return DetailedOutput.createAnnotation(relativeLocation.schemaURIFragment(), absoluteLocation,
-                instanceLocation.schemaURIFragment(), annotation, errors, annotations)
+                instanceLocation.schemaURIFragment(), annotation, errors, annotations,propertyName)
     }
 
     fun createError(relativeLocation: JSONPointer, instanceLocation: JSONPointer, error: String,
-            errors: List<Output>? = null, annotations: List<Output>? = null): DetailedOutput {
+            errors: List<Output>? = null, annotations: List<Output>? = null,propertyName:String?): DetailedOutput {
         return DetailedOutput.createError(relativeLocation.schemaURIFragment(), absoluteLocation,
-                instanceLocation.schemaURIFragment(), error, errors, annotations)
+                instanceLocation.schemaURIFragment(), error, errors, annotations,propertyName)
     }
 
     fun createSubSchemaError(relativeLocation: JSONPointer, instanceLocation: JSONPointer,
-            errors: List<Output>? = null, annotations: List<Output>? = null): DetailedOutput {
-        return createError(relativeLocation, instanceLocation, subSchemaErrorMessage, errors, annotations)
+            errors: List<Output>? = null, annotations: List<Output>? = null,propertyName:String?): DetailedOutput {
+        return createError(relativeLocation, instanceLocation, subSchemaErrorMessage, errors, annotations,propertyName)
     }
 
     fun createBasicErrorEntry(relativeLocation: JSONPointer, instanceLocation: JSONPointer, error: String) =
@@ -140,8 +140,8 @@ sealed class JSONSchema(
         override fun validateBasic(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
                 BasicOutput.trueOutput
 
-        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
-                createAnnotation(relativeLocation, instanceLocation, "Constant schema \"true\"")
+        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?) =
+                createAnnotation(relativeLocation, instanceLocation, "Constant schema \"true\"",propertyName=propertyName)
 
         override fun equals(other: Any?): Boolean = this === other || other is True && super.equals(other)
 
@@ -155,8 +155,8 @@ sealed class JSONSchema(
         override fun validateBasic(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
                 createBasicError(relativeLocation, instanceLocation, "Constant schema \"false\"")
 
-        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
-                createError(relativeLocation, instanceLocation, "Constant schema \"false\"")
+        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?) =
+                createError(relativeLocation, instanceLocation, "Constant schema \"false\"", propertyName = propertyName)
 
         override fun equals(other: Any?): Boolean = this === other || other is False && super.equals(other)
 
@@ -178,15 +178,15 @@ sealed class JSONSchema(
                 BasicOutput.trueOutput
         }
 
-        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
                 DetailedOutput {
-            val nestedOutput = nested.validateDetailed(relativeLocation, json, instanceLocation)
+            val nestedOutput = nested.validateDetailed(relativeLocation, json, instanceLocation,propertyName)
             return if (nestedOutput.valid)
                 createError(relativeLocation, instanceLocation, "Schema \"not\" - target was valid",
-                        annotations = listOf(nestedOutput))
+                        annotations = listOf(nestedOutput), propertyName = propertyName)
             else
                 createAnnotation(relativeLocation, instanceLocation, "Schema \"not\" - target was invalid",
-                        errors = listOf(nestedOutput))
+                        errors = listOf(nestedOutput), propertyName = propertyName)
         }
 
         override fun equals(other: Any?): Boolean =
@@ -212,13 +212,13 @@ sealed class JSONSchema(
                 BasicOutput(false, listOf(result))
         }
 
-        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
                 DetailedOutput {
             val result = getErrorEntry(relativeLocation, json, instanceLocation)
             return if (result == null)
-                createAnnotation(relativeLocation, instanceLocation, "Validation successful")
+                createAnnotation(relativeLocation, instanceLocation, "Validation successful", propertyName = propertyName)
             else
-                createError(relativeLocation, instanceLocation, result.error)
+                createError(relativeLocation, instanceLocation, result.error, propertyName = propertyName)
         }
 
     }
@@ -246,18 +246,18 @@ sealed class JSONSchema(
             return BasicOutput(false, errors)
         }
 
-        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+        override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
                 DetailedOutput {
             val errors = mutableListOf<Output>()
             for (child in children) {
-                child.validateDetailed(child.childLocation(relativeLocation), json, instanceLocation).let {
+                child.validateDetailed(child.childLocation(relativeLocation), json, instanceLocation,propertyName).let {
                     if (!it.valid)
                         errors.add(it)
                 }
             }
             if (errors.isEmpty())
-                return createAnnotation(relativeLocation, instanceLocation, "Validation successful")
-            return createSubSchemaError(relativeLocation, instanceLocation, errors)
+                return createAnnotation(relativeLocation, instanceLocation, "Validation successful",propertyName=propertyName)
+            return createSubSchemaError(relativeLocation, instanceLocation, errors, propertyName = propertyName)
         }
 
         override fun equals(other: Any?): Boolean =

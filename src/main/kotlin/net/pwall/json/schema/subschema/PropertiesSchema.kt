@@ -73,24 +73,24 @@ class PropertiesSchema(uri: URI?, location: JSONPointer, val properties: List<Pa
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONMapping<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object", propertyName = propertyName)
         val errors = mutableListOf<DetailedOutput>()
         for ((propertyName, propertySchema) in properties) {
             if (instance.containsKey(propertyName)) {
                 val propertyResult = propertySchema.validateDetailed(relativeLocation.child(propertyName), json,
-                        instanceLocation.child(propertyName))
+                        instanceLocation.child(propertyName), propertyName = propertyName)
                 if (!propertyResult.valid)
                     errors.add(propertyResult)
             }
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "Properties are valid")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "Properties are valid", propertyName = propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Errors in properties", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Errors in properties", errors = errors, propertyName = propertyName)
         }
     }
 

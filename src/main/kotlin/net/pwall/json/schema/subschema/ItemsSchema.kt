@@ -66,21 +66,21 @@ class ItemsSchema(uri: URI?, location: JSONPointer, val itemSchema: JSONSchema) 
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONSequence<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an array")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an array", propertyName = propertyName)
         val errors = mutableListOf<DetailedOutput>()
         for (i in instance.indices) {
-            val itemResult = itemSchema.validateDetailed(relativeLocation, json, instanceLocation.child(i))
+            val itemResult = itemSchema.validateDetailed(relativeLocation, json, instanceLocation.child(i), propertyName = propertyName)
             if (!itemResult.valid)
                 errors.add(itemResult)
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "All items are valid")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "All items are valid", propertyName = propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Errors in array items", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Errors in array items", errors = errors, propertyName = propertyName)
         }
     }
 

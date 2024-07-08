@@ -90,20 +90,20 @@ class AdditionalItemsSchema(private val parent: General, uri: URI?, location: JS
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONSequence<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an array")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an array", propertyName = propertyName)
         val errors = mutableListOf<DetailedOutput>()
         if (itemsSchema == null) {
             itemsArraySchema?.let {
                 if (instance.size > it.itemSchemaList.size) {
                     for (i in it.itemSchemaList.size until instance.size) {
-                        schema.validateDetailed(relativeLocation, json, instanceLocation.child(i)).let { output ->
+                        schema.validateDetailed(relativeLocation, json, instanceLocation.child(i), propertyName = propertyName).let { output ->
                             if (!output.valid) {
                                 errors.add(createError(relativeLocation, instanceLocation.child(i),
-                                        "Additional item $i found but was invalid", errors = listOf(output)))
+                                        "Additional item $i found but was invalid", errors = listOf(output), propertyName = propertyName))
                             }
                         }
                     }
@@ -111,9 +111,9 @@ class AdditionalItemsSchema(private val parent: General, uri: URI?, location: JS
             }
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "items are valid")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "items are valid", propertyName = propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Errors in items", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Errors in items", errors = errors, propertyName = propertyName)
         }
     }
 

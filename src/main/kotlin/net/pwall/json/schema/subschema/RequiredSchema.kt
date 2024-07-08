@@ -28,6 +28,7 @@ package net.pwall.json.schema.subschema
 import java.net.URI
 
 import net.pwall.json.JSONMapping
+import net.pwall.json.JSONString
 import net.pwall.json.JSONValue
 import net.pwall.json.pointer.JSONPointer
 import net.pwall.json.schema.JSONSchema
@@ -66,21 +67,21 @@ class RequiredSchema(uri: URI?, location: JSONPointer, val properties: List<Stri
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONMapping<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object",propertyName=propertyName)
         val errors = mutableListOf<DetailedOutput>()
         properties.forEachIndexed { i, property ->
-            if (!instance.containsKey(property))
+            if (!instance.containsKey(property)|| (instance[property] as? JSONString)?.value == "")
                 errors.add(createError(relativeLocation.child(i), instanceLocation,
-                        "Required property \"$property\" not found"))
+                        "Required property \"$property\" not found", propertyName = property))
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "All required properties found")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "All required properties found",propertyName=propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Required property error", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Required property error", errors = errors,propertyName=propertyName)
         }
     }
 

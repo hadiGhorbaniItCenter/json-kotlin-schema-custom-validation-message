@@ -44,13 +44,13 @@ class RefSchema(uri: URI?, location: JSONPointer, val target: JSONSchema, val fr
     override fun validateBasic(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
             BasicOutput = target.validateBasic(relativeLocation, json, instanceLocation)
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
-        val refResult = target.validateDetailed(relativeLocation, json, instanceLocation)
+        val refResult = target.validateDetailed(relativeLocation, json, instanceLocation, propertyName = propertyName)
         return if (refResult.valid)
-            createAnnotation(relativeLocation, instanceLocation, "\$ref schema valid")
+            createAnnotation(relativeLocation, instanceLocation, "\$ref schema valid", propertyName = propertyName)
         else
-            createError(relativeLocation, instanceLocation, "\$ref schema invalid", listOf(refResult))
+            createError(relativeLocation, instanceLocation, "\$ref schema invalid", listOf(refResult), propertyName = propertyName)
     }
 
     override fun equals(other: Any?): Boolean = this === other ||

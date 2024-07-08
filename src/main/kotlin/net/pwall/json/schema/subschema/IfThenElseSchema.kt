@@ -50,32 +50,32 @@ class IfThenElseSchema(uri: URI?, location: JSONPointer, private val ifSchema: J
             elseSchema?.validateBasic(relativeLocation.child("else"), json, instanceLocation) ?: BasicOutput.trueOutput
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
-        val ifResult = ifSchema.validateDetailed(relativeLocation.child("if"), json, instanceLocation)
+        val ifResult = ifSchema.validateDetailed(relativeLocation.child("if"), json, instanceLocation, propertyName = propertyName)
         if (ifResult.valid) {
             if (thenSchema == null)
                 return createAnnotation(relativeLocation, instanceLocation, "\"if\" schema is true",
-                        annotations = listOf(ifResult))
-            val thenResult = thenSchema.validateDetailed(relativeLocation.child("then"), json, instanceLocation)
+                        annotations = listOf(ifResult), propertyName = propertyName)
+            val thenResult = thenSchema.validateDetailed(relativeLocation.child("then"), json, instanceLocation, propertyName = propertyName)
             return if (thenResult.valid)
                 createAnnotation(relativeLocation, instanceLocation, "\"if\" schema is true",
-                        annotations = listOf(ifResult, thenResult))
+                        annotations = listOf(ifResult, thenResult), propertyName = propertyName)
             else
                 createSubSchemaError(relativeLocation, instanceLocation, errors = listOf(thenResult),
-                        annotations = listOf(ifResult))
+                        annotations = listOf(ifResult), propertyName = propertyName)
         }
         else {
             if (elseSchema == null)
                 return createAnnotation(relativeLocation, instanceLocation, "\"if\" schema is false",
-                        annotations = listOf(ifResult))
-            val elseResult = elseSchema.validateDetailed(relativeLocation.child("else"), json, instanceLocation)
+                        annotations = listOf(ifResult), propertyName = propertyName)
+            val elseResult = elseSchema.validateDetailed(relativeLocation.child("else"), json, instanceLocation, propertyName = propertyName)
             return if (elseResult.valid)
                 createAnnotation(relativeLocation, instanceLocation, "\"if\" schema is false",
-                        annotations = listOf(ifResult, elseResult))
+                        annotations = listOf(ifResult, elseResult), propertyName = propertyName)
             else
                 createSubSchemaError(relativeLocation, instanceLocation, errors = listOf(elseResult),
-                        annotations = listOf(ifResult))
+                        annotations = listOf(ifResult), propertyName = propertyName)
         }
     }
 

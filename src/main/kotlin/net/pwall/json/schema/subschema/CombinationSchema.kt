@@ -59,13 +59,13 @@ abstract class CombinationSchema(uri: URI?, location: JSONPointer, val name: Str
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val errors = mutableListOf<DetailedOutput>()
         val annotations = mutableListOf<DetailedOutput>()
         var trueCount = 0
         array.forEachIndexed { i, schema ->
-            schema.validateDetailed(relativeLocation.child(i), json, instanceLocation).let {
+            schema.validateDetailed(relativeLocation.child(i), json, instanceLocation, propertyName = propertyName).let {
                 if (it.valid) {
                     trueCount++
                     annotations.add(it)
@@ -77,9 +77,9 @@ abstract class CombinationSchema(uri: URI?, location: JSONPointer, val name: Str
         return if (resultValid(trueCount))
             createAnnotation(relativeLocation, instanceLocation,
                     "Combination schema \"$name\" succeeds - $trueCount of ${array.size} valid", errors,
-                    annotations)
+                    annotations, propertyName = propertyName)
         else
-            createError(relativeLocation, instanceLocation, failureMessage(trueCount), errors, annotations)
+            createError(relativeLocation, instanceLocation, failureMessage(trueCount), errors, annotations, propertyName = propertyName)
     }
 
     private fun failureMessage(trueCount: Int) =

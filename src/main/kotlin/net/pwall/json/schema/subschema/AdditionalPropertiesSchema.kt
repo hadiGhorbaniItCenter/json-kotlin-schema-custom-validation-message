@@ -79,27 +79,27 @@ class AdditionalPropertiesSchema(private val parent: General, uri: URI?, locatio
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONMapping<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object", propertyName = propertyName)
         val errors = mutableListOf<DetailedOutput>()
         val propertiesSchema = parent.children.filterIsInstance<PropertiesSchema>().firstOrNull()
         val patternPropertiesSchema = parent.children.filterIsInstance<PatternPropertiesSchema>().firstOrNull()
         instance.keys.forEach { key ->
             if (!anyMatchingProperty(key, propertiesSchema, patternPropertiesSchema)) {
-                schema.validateDetailed(relativeLocation, json, instanceLocation.child(key)).let {
+                schema.validateDetailed(relativeLocation, json, instanceLocation.child(key), propertyName = propertyName).let {
                     if (!it.valid)
                         errors.add(createError(relativeLocation, instanceLocation.child(key),
-                                "Additional property '$key' found but was invalid", errors = listOf(it)))
+                                "Additional property '$key' found but was invalid", errors = listOf(it), propertyName = propertyName))
                 }
             }
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "properties are valid")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "properties are valid", propertyName = propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Errors in properties", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Errors in properties", errors = errors, propertyName = propertyName)
         }
     }
 

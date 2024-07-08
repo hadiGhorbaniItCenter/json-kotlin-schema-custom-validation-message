@@ -41,7 +41,7 @@ class ExtensionSchema(uri: URI?, location: JSONPointer, val name: String, val va
     override fun validateBasic(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
             BasicOutput.trueOutput
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer) =
-            createAnnotation(relativeLocation, instanceLocation, "Extension schema $name")
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?) =
+            createAnnotation(relativeLocation, instanceLocation, "Extension schema $name", propertyName = propertyName)
 
 }

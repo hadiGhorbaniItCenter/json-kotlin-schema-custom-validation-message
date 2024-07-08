@@ -77,26 +77,26 @@ class PatternPropertiesSchema(uri: URI?, location: JSONPointer, val properties: 
         return BasicOutput(false, errors)
     }
 
-    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer):
+    override fun validateDetailed(relativeLocation: JSONPointer, json: JSONValue?, instanceLocation: JSONPointer,propertyName:String?):
             DetailedOutput {
         val instance = instanceLocation.eval(json)
         if (instance !is JSONMapping<*>)
-            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object")
+            return createAnnotation(relativeLocation, instanceLocation, "Value is not an object", propertyName = propertyName)
         val errors = mutableListOf<DetailedOutput>()
         for ((propertyPattern, propertySchema) in properties) {
             for (name in instance.keys) {
                 if (propertyPattern.containsMatchIn(name)) {
                     val propertyResult = propertySchema.validateDetailed(
-                            relativeLocation.child(propertyPattern.toString()), json, instanceLocation.child(name))
+                            relativeLocation.child(propertyPattern.toString()), json, instanceLocation.child(name), propertyName = propertyName)
                     if (!propertyResult.valid)
                         errors.add(propertyResult)
                 }
             }
         }
         return when (errors.size) {
-            0 -> createAnnotation(relativeLocation, instanceLocation, "patternProperties are valid")
+            0 -> createAnnotation(relativeLocation, instanceLocation, "patternProperties are valid", propertyName = propertyName)
             1 -> errors[0]
-            else -> createError(relativeLocation, instanceLocation, "Errors in patternProperties", errors = errors)
+            else -> createError(relativeLocation, instanceLocation, "Errors in patternProperties", errors = errors, propertyName = propertyName)
         }
     }
 

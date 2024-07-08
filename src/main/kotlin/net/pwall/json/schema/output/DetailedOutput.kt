@@ -29,7 +29,8 @@ class DetailedOutput(
         valid: Boolean,
         val keywordLocation: String,
         val absoluteKeywordLocation: String? = null,
-        val instanceLocation: String,
+        val instanceLocation: String?,
+        val propertyName: String,
         val error: String? = null,
         val annotation: String? = null,
         val errors: List<Output>? = null,
@@ -40,7 +41,7 @@ class DetailedOutput(
         return this === other || other is DetailedOutput && super.equals(other) &&
                 keywordLocation == other.keywordLocation && absoluteKeywordLocation == other.absoluteKeywordLocation &&
                 instanceLocation == other.instanceLocation && error == other.error && annotation == other.annotation &&
-                errors == other.errors && annotations == other.annotations
+                errors == other.errors && annotations == other.annotations && propertyName == other.propertyName
     }
 
     override fun hashCode(): Int {
@@ -50,15 +51,15 @@ class DetailedOutput(
     companion object {
 
         fun createError(keywordLocation: String, absoluteKeywordLocation: String? = null, instanceLocation: String,
-                        error: String, errors: List<Output>? = null, annotations: List<Output>? = null): DetailedOutput {
-            return DetailedOutput(false, keywordLocation, absoluteKeywordLocation, instanceLocation, error, null,
-                    errors?.let { if (it.isEmpty()) null else it }, annotations?.let { if (it.isEmpty()) null else it })
+                        error: String, errors: List<Output>? = null, annotations: List<Output>? = null,propertyName:String?): DetailedOutput {
+            return DetailedOutput(false, keywordLocation, absoluteKeywordLocation,propertyName, instanceLocation, error, null,
+                    errors?.let { it.ifEmpty { null } }, annotations?.let { it.ifEmpty { null } })
         }
 
         fun createAnnotation(keywordLocation: String, absoluteKeywordLocation: String? = null, instanceLocation: String,
-                             annotation: String, errors: List<Output>? = null, annotations: List<Output>? = null): DetailedOutput {
-            return DetailedOutput(true, keywordLocation, absoluteKeywordLocation, instanceLocation, null, annotation,
-                    errors?.let { if (it.isEmpty()) null else it }, annotations?.let { if (it.isEmpty()) null else it })
+                             annotation: String, errors: List<Output>? = null, annotations: List<Output>? = null,propertyName:String?): DetailedOutput {
+            return DetailedOutput(true, keywordLocation, absoluteKeywordLocation,propertyName, instanceLocation, null, annotation,
+                    errors?.let { it.ifEmpty { null } }, annotations?.let { it.ifEmpty { null } })
         }
 
     }
