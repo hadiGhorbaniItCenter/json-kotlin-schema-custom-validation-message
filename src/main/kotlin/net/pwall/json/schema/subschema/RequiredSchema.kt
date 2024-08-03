@@ -60,7 +60,7 @@ class RequiredSchema(uri: URI?, location: JSONPointer, val properties: List<Stri
         properties.forEachIndexed { i, property ->
             if (!instance.containsKey(property))
                 errors.add(createBasicErrorEntry(relativeLocation.child(i), instanceLocation,
-                        "Required property \"$property\" not found"))
+                        "لطفاً این فیلد را تکمیل کنید."))
         }
         if (errors.isEmpty())
             return BasicOutput.trueOutput
@@ -76,7 +76,7 @@ class RequiredSchema(uri: URI?, location: JSONPointer, val properties: List<Stri
         properties.forEachIndexed { i, property ->
             if (!instance.containsKey(property)|| (instance[property] as? JSONString)?.value == "")
                 errors.add(createError(relativeLocation.child(i), instanceLocation,
-                        "Required property \"$property\" not found", propertyName = property))
+                        "لطفاً این فیلد را تکمیل کنید.", propertyName = property))
         }
         return when (errors.size) {
             0 -> createAnnotation(relativeLocation, instanceLocation, "All required properties found",propertyName=propertyName)

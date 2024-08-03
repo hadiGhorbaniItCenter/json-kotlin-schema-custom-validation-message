@@ -47,7 +47,7 @@ class PatternValidator(uri: URI?, location: JSONPointer, val regex: Regex) : JSO
         val instance = instanceLocation.eval(json)
         return if (instance !is JSONString || regex.containsMatchIn(instance.value)) null else
                 createBasicErrorEntry(relativeLocation, instanceLocation,
-                        "ورودی با قالب مورد نظر مطابقت ندارد  $regex - ${instance.toErrorDisplay()}")
+                        "ورودی نامعتبر است.")
     }
 
     override fun equals(other: Any?): Boolean =
